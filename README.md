@@ -6,8 +6,8 @@ OpenSeaDragon enabled iiif gallery viewer written with ChatGPT 5
 - design is nicer
 - IIIF logo added
 - inputs can be hidden or revealed to give more space to the gallery area
-- new viewer-only page option*
+- new viewer-only page option
 
-* New page viewer.html is the same as the index.html but with the ability to add manifests and export collections removed. This is intended for use when teaching and/or embedded in Canvas. 
+New page viewer.html is the same as the index.html but with the ability to add manifests and export collections removed. This is intended for use when teaching and/or embedded in Canvas. 
 
 
