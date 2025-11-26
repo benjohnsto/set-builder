@@ -896,17 +896,35 @@ function addSelectedPagesToGallery() {
     allCanvasItems = currentManifestForSelection.sequences?.[0]?.canvases || [];
   }
   
-  // Add only selected pages
+  // Get only selected canvases
   const sortedIndices = Array.from(selectedPageIndices).sort((a, b) => a - b);
-  sortedIndices.forEach(index => {
-    const canvas = allCanvasItems[index];
-    if (canvas) {
-      addCanvasToGallery(canvas, currentManifestForSelection);
-    }
-  });
+  const selectedCanvases = sortedIndices.map(index => allCanvasItems[index]).filter(c => c);
   
-  // Store the manifest
-  collectedManifests.push(currentManifestForSelection);
+  // Create a modified manifest with only selected pages
+  let modifiedManifest;
+  
+  if (iiifVersion === 3) {
+    modifiedManifest = {
+      ...currentManifestForSelection,
+      items: selectedCanvases
+    };
+  } else {
+    modifiedManifest = {
+      ...currentManifestForSelection,
+      sequences: [{
+        ...currentManifestForSelection.sequences[0],
+        canvases: selectedCanvases
+      }]
+    };
+  }
+  
+  // Store the MODIFIED manifest (not the original)
+  collectedManifests.push(modifiedManifest);
+  
+  // Add selected pages to gallery
+  selectedCanvases.forEach(canvas => {
+    addCanvasToGallery(canvas, modifiedManifest);
+  });
   
   closePageSelector();
 }
