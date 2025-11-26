@@ -111,7 +111,7 @@ function getMetadataValue(metadata, label, getLast = false) {
   if (getLast && items.length > 0) {
     const lastItem = items[items.length - 1]; // Get the last instance found
     if (Array.isArray(lastItem.value)) {
-      return lastItem.value[0]; // Return the first value of the array
+      return lastItem.value[0]; // Return the first value of the array (Digital Commonwealth)
     }
     return lastItem.value; // Return the value directly if it's not an array
   }
@@ -143,13 +143,15 @@ function addCanvasToGallery(canvas, manifest) {
   console.log('Manifest Metadata:', manifestMetadata);
   console.log('Canvas Metadata:', canvasMetadata);
 
-  // Extract metadata values
-  const title = manifest.label || canvas.label || 'No title';
-  const author = getMetadataValue(manifestMetadata, 'Author') || getMetadataValue(canvasMetadata, 'Author') || 'Unknown';
-  const date = getMetadataValue(manifestMetadata, 'Date') || getMetadataValue(canvasMetadata, 'Date') || 'Unknown';
-  const collection = getMetadataValue(manifestMetadata, 'Collection') || getMetadataValue(canvasMetadata, 'Collection') || 'Unknown';
-  const attribution = manifest.attribution || 'No attribution';
-  
+    // Attempt to get title, date and author
+  let title = getMetadataValue(canvasMetadata, 'Title') || getMetadataValue(manifestMetadata, 'Title') || manifest.label || 'No title returned';
+  let date = getMetadataValue(canvasMetadata, 'Date') || getMetadataValue(manifestMetadata, 'Date') || getMetadataValue(manifestMetadata, 'Created Published') || 'No date returned';
+  let author = getMetadataValue(canvasMetadata, 'Creator') || getMetadataValue(manifestMetadata, 'Creator') || getMetadataValue(canvasMetadata, 'Contributors') || getMetadataValue(manifestMetadata, 'Contributors') || getMetadataValue(canvasMetadata, 'Author') || getMetadataValue(manifestMetadata, 'Author') || getMetadataValue(canvasMetadata, 'Contributor') || getMetadataValue(manifestMetadata, 'Contributor') || 'No author returned';
+
+   // Get collection name and attribution
+  let collection = getMetadataValue(canvasMetadata, 'Location') || getMetadataValue(manifestMetadata, 'Location') || 'No collection returned';
+  const attribution = manifest.attribution || 'No attribution returned';
+
   // Get location link from various possible sources
   let locationLink = null;
 
@@ -229,9 +231,9 @@ function addCanvasToGallery(canvas, manifest) {
 
   // Create link to item
   const locationLinkEl = document.createElement('a');
-  locationLinkEl.href = locationLink;
+   locationLinkEl.href = locationLink === 'No link available' ? '#' : locationLink; // Link to '#' if no link available
   locationLinkEl.textContent = 'View Item';
-  locationLinkEl.target = '_blank';
+  locationLinkEl.target = '_blank'; // Opens in a new tab
 
   const locationParagraph = document.createElement('p');
   locationParagraph.appendChild(locationLinkEl);
@@ -254,7 +256,7 @@ function addCanvasToGallery(canvas, manifest) {
   card.appendChild(dateEl);
   card.appendChild(collectionEl);
   card.appendChild(attributionEl);
-  card.appendChild(locationParagraph);
+  card.appendChild(locationParagraph); // Add location link
   card.appendChild(manifestParagraph);  // Add manifest link
 
   // Add card to gallery
