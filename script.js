@@ -216,7 +216,6 @@ function makeCardDraggable(card) {
   card.addEventListener('dragstart', (e) => {
     // Prevent dragging if clicking on image or links
     if (e.target.tagName === 'IMG' || e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-      e.preventDefault();
       return;
     }
     
