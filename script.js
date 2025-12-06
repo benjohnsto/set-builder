@@ -13,163 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize resizer functionality
   initializeResizer();
 
-// Function to show the page selector modal
-function showPageSelector(manifest, canvasItems) {
-  currentManifestForSelection = manifest;
-  selectedPageIndices.clear();
-  
-  const modal = document.getElementById('pageSelectorModal');
-  const pageGrid = document.getElementById('pageGrid');
-  const iiifVersion = getIIIFVersion(manifest);
-  
-  // Set modal title
-  let manifestLabel = 'Untitled Manifest';
-  if (iiifVersion === 3 && manifest.label) {
-    manifestLabel = Object.values(manifest.label).flat()[0] || 'Untitled Manifest';
-  } else if (iiifVersion === 2) {
-    manifestLabel = manifest.label || 'Untitled Manifest';
-  }
-  document.getElementById('modalTitle').textContent = `Select Pages from: ${manifestLabel}`;
-  
-  // Clear previous pages
-  pageGrid.innerHTML = '';
-  
-  // Add pages to grid
-  canvasItems.forEach((canvas, index) => {
-    const pageItem = document.createElement('div');
-    pageItem.className = 'page-item';
-    pageItem.dataset.index = index;
-    
-    // Get thumbnail URL
-    let thumbnailUrl = '';
-    if (iiifVersion === 3) {
-      const annotation = canvas.items?.[0]?.items?.[0];
-      const imageService = annotation?.body?.service?.[0];
-      if (imageService?.id) {
-        thumbnailUrl = `${imageService.id}/full/!150,150/0/default.jpg`;
-      }
-    } else {
-      const imageService = canvas.images?.[0]?.resource?.service;
-      if (imageService?.['@id']) {
-        thumbnailUrl = `${imageService['@id']}/full/!150,150/0/default.jpg`;
-      }
-    }
-    
-    // Get page label
-    let pageLabel = `Page ${index + 1}`;
-    if (iiifVersion === 3 && canvas.label) {
-      const canvasLabel = Object.values(canvas.label).flat()[0];
-      if (canvasLabel) pageLabel = canvasLabel;
-    } else if (iiifVersion === 2 && canvas.label) {
-      pageLabel = canvas.label;
-    }
-    
-    // Create page item HTML
-    pageItem.innerHTML = `
-      <img src="${thumbnailUrl}" alt="${pageLabel}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Crect fill=%22%23ddd%22 width=%22150%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-      <div class="page-label">${pageLabel}</div>
-      <div class="page-number">Index: ${index}</div>
-    `;
-    
-    // Add click handler
-    pageItem.addEventListener('click', () => {
-      togglePageSelection(index);
-    });
-    
-    pageGrid.appendChild(pageItem);
-  });
-  
-  updateSelectionCount();
-  modal.style.display = 'block';
-}
-
-// Function to toggle page selection
-function togglePageSelection(index) {
-  if (selectedPageIndices.has(index)) {
-    selectedPageIndices.delete(index);
-  } else {
-    selectedPageIndices.add(index);
-  }
-  
-  // Update visual state
-  const pageItem = document.querySelector(`.page-item[data-index="${index}"]`);
-  if (pageItem) {
-    pageItem.classList.toggle('selected');
-  }
-  
-  updateSelectionCount();
-}
-
-// Function to update selection count
-function updateSelectionCount() {
-  const count = selectedPageIndices.size;
-  const countEl = document.getElementById('selectionCount');
-  countEl.textContent = `${count} page${count !== 1 ? 's' : ''} selected`;
-  
-  // Enable/disable Add button
-  const addButton = document.getElementById('addSelectedPages');
-  addButton.disabled = count === 0;
-}
-
-// Function to select all pages
-function selectAllPages() {
-  const pageItems = document.querySelectorAll('.page-item');
-  pageItems.forEach((item, index) => {
-    selectedPageIndices.add(index);
-    item.classList.add('selected');
-  });
-  updateSelectionCount();
-}
-
-// Function to deselect all pages
-function deselectAllPages() {
-  selectedPageIndices.clear();
-  const pageItems = document.querySelectorAll('.page-item');
-  pageItems.forEach(item => {
-    item.classList.remove('selected');
-  });
-  updateSelectionCount();
-}
-
-// Function to close the modal
-function closePageSelector() {
-  const modal = document.getElementById('pageSelectorModal');
-  modal.style.display = 'none';
-  currentManifestForSelection = null;
-  selectedPageIndices.clear();
-}
-
-// Function to add selected pages to gallery
-function addSelectedPagesToGallery() {
-  if (!currentManifestForSelection || selectedPageIndices.size === 0) {
-    return;
-  }
-  
-  const iiifVersion = getIIIFVersion(currentManifestForSelection);
-  let allCanvasItems = [];
-  
-  if (iiifVersion === 3) {
-    allCanvasItems = currentManifestForSelection.items || [];
-  } else {
-    allCanvasItems = currentManifestForSelection.sequences?.[0]?.canvases || [];
-  }
-  
-  // Add only selected pages
-  const sortedIndices = Array.from(selectedPageIndices).sort((a, b) => a - b);
-  sortedIndices.forEach(index => {
-    const canvas = allCanvasItems[index];
-    if (canvas) {
-      addCanvasToGallery(canvas, currentManifestForSelection);
-    }
-  });
-  
-  // Store the manifest
-  collectedManifests.push(currentManifestForSelection);
-  
-  closePageSelector();
-}
-
-
   // Initialize all event listeners
   initializeEventListeners();
 });
@@ -474,6 +317,13 @@ if (iiifVersion === 3) {
     locationLink = 'https://' + locationLink;
   }
 
+   // --- Construct the Allmaps Link ---
+  //Get the manifest URL
+  const manifestUrlForGeoreferencing = manifest.id || manifest['@id'];
+
+  //Create the full Allmaps Editor URL
+  const allmapsLink = `https://editor.allmaps.org/?url=${encodeURIComponent(manifestUrlForGeoreferencing)}`;
+
   // Debugging logs for verification
   console.log('Location Link:', locationLink);
 
@@ -535,10 +385,18 @@ if (iiifVersion === 3) {
   manifestLinkEl.href = manifest['@id'] || manifest.id || '#';
   manifestLinkEl.textContent = 'View IIIF Manifest';
   manifestLinkEl.target = '_blank';
-  manifestLinkEl.className = 'manifest-link';
 
   const manifestParagraph = document.createElement('p');
   manifestParagraph.appendChild(manifestLinkEl);
+
+  // Create link to Allmaps
+  const allmapsLinkEl = document.createElement('a');
+  allmapsLinkEl.href = allmapsLink;
+  allmapsLinkEl.textContent = 'Open in Allmaps Editor';
+  allmapsLinkEl.target = '_blank';
+
+  const allmapsParagraph = document.createElement('p');
+  allmapsParagraph.appendChild(allmapsLinkEl);
 
   // Append all elements to card
   card.appendChild(deleteBtn);
@@ -550,91 +408,12 @@ if (iiifVersion === 3) {
   card.appendChild(attributionEl);
   card.appendChild(locationParagraph);
   card.appendChild(manifestParagraph);
+  card.appendChild(allmapsParagraph);
 
   // Add card to gallery
   document.getElementById('gallery').appendChild(card);
 }
 
-
-  // Debugging logs for verification
-  console.log('Location Link:', locationLink);
-
-  // Create card element
-  const card = document.createElement('div');
-  card.className = 'card';
-  
-  // Make card draggable
-  makeCardDraggable(card);
-
-  // Create image element
-  const img = document.createElement('img');
-  img.src = imageUrl;
-  img.alt = title;
-
-  // Click to view in OpenSeadragon
-  img.addEventListener('click', () => {
-    viewer.open(highResUrl);
-  });
-
-  // Create delete button
-  const deleteBtn = document.createElement('button');
-  deleteBtn.className = 'delete-btn';
-  deleteBtn.textContent = '×';
-  deleteBtn.addEventListener('click', () => {
-    const shouldRemove = confirm('Do you want to remove this image from the gallery?');
-    if (shouldRemove) {
-      card.remove();
-    }
-  });
-
-  // Create metadata elements
-  const titleEl = document.createElement('p');
-  titleEl.innerHTML = `<strong>Title:</strong> ${title}`;
-
-  const authorEl = document.createElement('p');
-  authorEl.innerHTML = `<strong>Author:</strong> ${author}`;
-
-  const dateEl = document.createElement('p');
-  dateEl.innerHTML = `<strong>Date:</strong> ${date}`;
-
-  const collectionEl = document.createElement('p');
-  collectionEl.innerHTML = `<strong>Collection:</strong> ${collection}`;
-
-  const attributionEl = document.createElement('p');
-  attributionEl.innerHTML = `<strong>Attribution:</strong> ${attribution}`;
-
-  // Create link to item
-  const locationLinkEl = document.createElement('a');
-   locationLinkEl.href = locationLink === 'No link available' ? '#' : locationLink; // Link to '#' if no link available
-  locationLinkEl.textContent = 'View Item';
-  locationLinkEl.target = '_blank'; // Opens in a new tab
-
-  const locationParagraph = document.createElement('p');
-  locationParagraph.appendChild(locationLinkEl);
-
-  // Create link to IIIF manifest
-  const manifestLinkEl = document.createElement('a');
-  manifestLinkEl.href = manifest['@id'] || '#';
-  manifestLinkEl.textContent = 'View IIIF Manifest';
-  manifestLinkEl.target = '_blank';
-  manifestLinkEl.className = 'manifest-link';
-
-  const manifestParagraph = document.createElement('p');
-  manifestParagraph.appendChild(manifestLinkEl);
-
-  // Append all elements to card
-  card.appendChild(deleteBtn);
-  card.appendChild(img);
-  card.appendChild(titleEl);
-  card.appendChild(authorEl);
-  card.appendChild(dateEl);
-  card.appendChild(collectionEl);
-  card.appendChild(attributionEl);
-  card.appendChild(locationParagraph); // Add location link
-  card.appendChild(manifestParagraph);  // Add manifest link
-
-  // Add card to gallery
-  document.getElementById('gallery').appendChild(card);
 
 
 // Clear current gallery and add images from loaded collection
@@ -902,35 +681,36 @@ function addSelectedPagesToGallery() {
     allCanvasItems = currentManifestForSelection.sequences?.[0]?.canvases || [];
   }
   
-  // Get only selected canvases
-  const sortedIndices = Array.from(selectedPageIndices).sort((a, b) => a - b);
-  const selectedCanvases = sortedIndices.map(index => allCanvasItems[index]).filter(c => c);
-  
-  // Create a modified manifest with only selected pages
-  let modifiedManifest;
-  
-  if (iiifVersion === 3) {
-    modifiedManifest = {
-      ...currentManifestForSelection,
-      items: selectedCanvases
-    };
-  } else {
-    modifiedManifest = {
-      ...currentManifestForSelection,
-      sequences: [{
-        ...currentManifestForSelection.sequences[0],
-        canvases: selectedCanvases
-      }]
-    };
+ 
+// Create a modified manifest with only selected pages and store it
+const sortedIndices = Array.from(selectedPageIndices).sort((a, b) => a - b);
+const selectedCanvases = sortedIndices.map(index => allCanvasItems[index]).filter(c => c);
+
+let modifiedManifest;
+if (iiifVersion === 3) {
+  modifiedManifest = {
+    ...currentManifestForSelection,
+    items: selectedCanvases
+  };
+} else { // IIIF 2.0
+  modifiedManifest = {
+    ...currentManifestForSelection,
+    sequences: [{
+      ...currentManifestForSelection.sequences[0],
+      canvases: selectedCanvases
+    }]
+  };
+}
+
+// Now, push the MODIFIED manifest
+collectedManifests.push(modifiedManifest);
+
+// And add the pages to the gallery using the modified manifest context
+selectedCanvases.forEach(canvas => {
+  if (canvas) {
+    addCanvasToGallery(canvas, modifiedManifest); // Use modifiedManifest here
   }
-  
-  // Store the MODIFIED manifest (not the original)
-  collectedManifests.push(modifiedManifest);
-  
-  // Add selected pages to gallery
-  selectedCanvases.forEach(canvas => {
-    addCanvasToGallery(canvas, modifiedManifest);
-  });
+});
   
   closePageSelector();
 }

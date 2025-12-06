@@ -168,9 +168,10 @@ body {
   text-align: left;
   max-width: 220px;
   position: relative;
-  font-size: small; /* Smaller font size */
+  font-size: small;  
   cursor: move; /* Indicate card is draggable */
   transition: opacity 0.2s, transform 0.2s;
+  overflow-wrap: break-word;
 }
 
 .card.dragging {
@@ -179,7 +180,7 @@ body {
 }
 
 .card.drag-over {
-  border: 2px dashed #4CAF50;
+  border: 2px dashed #0073A3;
   background-color: #f0f0f0;
 }
 
