@@ -3,6 +3,79 @@ let collectedManifests = []; // This will hold the individual manifests
 let currentManifestForSelection = null; 
 let selectedPageIndices = new Set(); 
 
+// --- begin deeplink fileopening script --
+* Deep-link hosted file into your existing <input type="file">.
+ * Usage: https://https://kristinallarsen.github.io/set-builder//?file=ENCODED_REMOTE_URL[&filename=Name.ext]
+ * Optional: Set FILE_INPUT_SELECTOR to your input's id or selector.
+ */
+  
+function() {
+  // CHANGE THIS to your actual file input selector if you have a known id/class.
+  // Example: '#fileInput' or '.my-file-input'. If unknown, it will fall back to the first input[type="file"].
+  const FILE_INPUT_SELECTOR = '#fileInput';
+
+  // Run after DOM loads so the input exists
+  document.addEventListener('DOMContentLoaded', () => {
+    openHostedFileFromQuery().catch(err => {
+      console.error('Deep-link file loading failed:', err);
+      alert('Unable to load file from URL. Make sure it is public and supports CORS.');
+    });
+  });
+
+  async function openHostedFileFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const rawParam = params.get('file') || params.get('url');
+    if (!rawParam) return; // No deep-link: do nothing
+
+    const fileUrl = normalizeFileUrl(rawParam);
+    const response = await fetch(fileUrl, { mode: 'cors', credentials: 'omit', redirect: 'follow' });
+    if (!response.ok) throw new Error(`HTTP ${response.status} fetching ${fileUrl}`);
+
+    const blob = await response.blob();
+    const filename = params.get('filename') || deriveFilenameFromUrl(fileUrl);
+    const fileObj = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+
+    const input = document.querySelector(FILE_INPUT_SELECTOR) || document.querySelector('input[type="file"]');
+    if (!input || input.type !== 'file') {
+      throw new Error('File input not found. Set FILE_INPUT_SELECTOR to your input element.');
+    }
+
+    const dt = new DataTransfer();
+    dt.items.add(fileObj);
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function normalizeFileUrl(u) {
+    // Converts GitHub blob URLs to raw URLs so we fetch actual file bytes.
+    try {
+      const url = new URL(u);
+      if (url.hostname === 'github.com') {
+        const parts = url.pathname.split('/');
+        const blobIdx = parts.indexOf('blob');
+        if (blobIdx !== -1) {
+          const newPath = parts.slice(0, blobIdx).concat(parts.slice(blobIdx + 1)).join('/');
+          return `https://raw.githubusercontent.com${newPath}`;
+        }
+      }
+      return u;
+    } catch {
+      return u;
+    }
+  }
+
+  function deriveFilenameFromUrl(u) {
+    try {
+      const url = new URL(u);
+      const base = url.pathname.substring(url.pathname.lastIndexOf('/') + 1);
+      return decodeURIComponent(base || 'download');
+    } catch {
+      return 'download';
+    }
+  }
+})();
+// --- end deeplink fileloading --
+
 document.addEventListener('DOMContentLoaded', () => {
   viewer = OpenSeadragon({
     id: 'viewer',
