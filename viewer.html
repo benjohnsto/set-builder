@@ -1,35 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>IIIF Image Gallery Viewer</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/openseadragon.min.js"></script>
-</head>
-<body>
-  <div class="container">
-    <div class="left-panel">
-      <div class="header">
-        <div class="header-top">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" alt="IIIF Logo" class="iiif-logo">
-          <h1 id="page-title">IIIF Image Gallery Viewer</h1>
-<button id="toggleInputs" class="toggle-btn">Hide Input Panel</button>
-        </div>
-        
-        <div id="inputPanel" class="input-panel">
-          <p><small>Choose a saved gallery manifest file to view</small></p>
-          <label for="uploadManifest" class="file-input-label">Choose File</label>
-          <input type="file" id="uploadManifest" accept=".json" style="display: none;" />
-          <span id="fileName" class="file-name">No file chosen</span>
-          <button id="loadManifest">Load Manifest</button>
-        </div>
-      </div>
-      <div id="gallery"></div>
+<!DOCTYPE html> 
+<html lang="en"> 
+  <head> 
+    <meta charset="UTF-8"> 
+    <title>IIIF Image Gallery Viewer</title> 
+<link rel="stylesheet" href="styles.css"> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/openseadragon.min.js"></script> 
+<style> 
+/* View-only: hide input controls and delete buttons */ 
+.view-only #inputPanel { display: none !important; } .view-only #toggleInputs { display: none !important; } .view-only .delete-btn { display: none !important; } 
+</style> 
+</head> 
+<body class="view-only"> 
+  <div class="container"> 
+    <div class="left-panel"> 
+      <div class="header"> 
+        <div class="header-top"> 
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" alt="IIIF Logo" class="iiif-logo"> <h1 id="page-title">IIIF Image Gallery Builder</h1> <button id="toggleInputs" class="toggle-btn">Hide Input Panel</button> </div>
+ <div id="inputPanel" class="input-panel">
+      <input type="text" id="manifestUrl" placeholder="To Build: Add IIIF Manifest URLs here one at a time or separated by commas" />
+      <button id="addManifest">Add Manifest(s)</button>
+
+      <input type="text" id="manifestName" placeholder="To Save: Enter new gallery manifest name here and click Export button" />
+      <button id="export-manifest">Export Combined Manifest</button>
+
+      <p><small>To Open: Use Choose File button, navigate to a locally saved .json file and click Load Manifest</small></p>
+      <label for="uploadManifest" class="file-input-label">Choose File</label>
+      <input type="file" id="uploadManifest" accept=".json" style="display: none;" />
+      <span id="fileName" class="file-name">No file chosen</span>
+      <button id="loadManifest">Load Manifest</button>
     </div>
-    <!-- Resizable divider -->
-    <div id="resizer"></div>
-    <div id="viewer"></div>
-    <script src="viewer-script.js"></script>
   </div>
-</body>
-</html>
+  <div id="gallery"></div>
+</div>
+
+<div id="resizer"></div>
+<div id="viewer"></div>
+
+<!-- Include script.js only once -->
+<script src="script.js"></script>
+
+<!-- Page Selector Modal -->
+<div id="pageSelectorModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Select Pages to Add</h2>
+      <span class="close-modal">&times;</span>
+    </div>
+    <div class="modal-controls">
+      <button id="selectAllPages" class="modal-btn">Select All</button>
+      <button id="deselectAllPages" class="modal-btn">Deselect All</button>
+      <span id="selectionCount">0 pages selected</span>
+    </div>
+    <div id="pageGrid" class="page-grid">
+      <!-- Pages will be dynamically added here -->
+    </div>
+    <div class="modal-footer">
+      <button id="cancelPageSelection" class="modal-btn-secondary">Cancel</button>
+      <button id="addSelectedPages" class="modal-btn-primary">Add Selected Pages</button>
+    </div>
+  </div>
+</div>
+</div> </body> </html>
