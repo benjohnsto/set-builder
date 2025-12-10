@@ -5,6 +5,25 @@
   <title>IIIF Image Gallery Viewer</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/openseadragon.min.js"></script>
+<style> 
+  /* Viewer hint overlay */ 
+    #viewer { position: relative; } 
+    #viewerHint { position: absolute; 
+      left: 50%; 
+      top: 50%; 
+      transform: translate(-50%, -50%); 
+      color: #7e7d7d; 
+      font-size: 1rem; 
+      text-align: center; 
+      pointer-events: none; 
+      padding: 0.5rem 0.75rem; 
+      background: rgba(255, 255, 255, 0.85); 
+      border-radius: 6px; } 
+
+  /* Hide the hint once an image has been opened */ 
+  .viewer-has-image #viewerHint { display: none !important; } 
+  </style>
+
 </head>
 <body>
   <div class="container">
@@ -31,5 +50,13 @@
     <div id="viewer"></div>
     <script src="viewer-script.js"></script>
   </div>
+  <!-- Script to either load first image if called in link or hint overlay -->
+  <script> 
+document.addEventListener('DOMContentLoaded', 
+function() { var viewerEl = document.getElementById('viewer'); 
+if (viewerEl && !document.getElementById('viewerHint')) { var hint = document.createElement('div'); 
+hint.id = 'viewerHint'; hint.textContent = 'Click any thumbnail to load an image'; 
+viewerEl.appendChild(hint); } var params = new URLSearchParams(window.location.search); var openFirst = (params.get('openFirst') === '1' || params.get('openfirst') === '1'); var opened = false; function markViewerHasImage() { document.body.classList.add('viewer-has-image'); } function tryOpenFirst() { if (opened) return; var firstThumb = document.querySelector('#gallery .card img'); if (firstThumb) { opened = true; firstThumb.click(); markViewerHasImage(); } } if (openFirst) { tryOpenFirst(); var gallery = document.getElementById('gallery'); if (gallery) { var mo = new MutationObserver(function() { tryOpenFirst(); }); mo.observe(gallery, { childList: true, subtree: true }); } } document.addEventListener('click', function(e) { if (e.target && e.target.matches('#gallery .card img')) { markViewerHasImage(); } }); }); </script>
+
 </body>
 </html>
