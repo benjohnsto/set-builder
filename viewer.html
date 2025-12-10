@@ -1,45 +1,38 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-  <head> 
-    <meta charset="UTF-8"> 
-    <title>IIIF Image Gallery Viewer</title> 
-<link rel="stylesheet" href="styles.css"> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/openseadragon.min.js"></script> 
-<style> 
-/* View-only: hide input controls and delete buttons */ 
-.view-only #inputPanel { display: none !important; } .view-only #toggleInputs { display: none !important; } .view-only .delete-btn { display: none !important; } 
-</style> 
-</head> 
-<body class="view-only"> 
-  <div class="container"> 
-    <div class="left-panel"> 
-      <div class="header"> 
-        <div class="header-top"> 
-<img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" alt="IIIF Logo" class="iiif-logo"> <h1 id="page-title">IIIF Image Gallery Viewer</h1> <button id="toggleInputs" class="toggle-btn">Hide Input Panel</button> </div>
- <div id="inputPanel" class="input-panel">
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>IIIF Image Gallery Viewer</title> <link rel="stylesheet" href="styles.css"> <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/openseadragon.min.js"></script> <style> /* Viewer hint overlay */ #viewer { position: relative; } #viewerHint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #7e7d7d; font-size: 1rem; text-align: center; pointer-events: none; padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.85); border-radius: 6px; } /* Hide the hint once an image has been opened */ .viewer-has-image #viewerHint { display: none !important; }
+/* View-only: hide input controls and delete buttons */
+.view-only #inputPanel { display: none !important; }
+.view-only #toggleInputs { display: none !important; }
+.view-only .delete-btn { display: none !important; }
+</style> </head> <body class="view-only"> <div class="container"> <div class="left-panel"> <div class="header"> <div class="header-top"> <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" alt="IIIF Logo" class="iiif-logo"> <h1 id="page-title">IIIF Image Gallery Viewer</h1> <button id="toggleInputs" class="toggle-btn">Hide Input Panel</button> </div>
+ <!-- Keep all controls in DOM so script.js can bind to them; CSS hides them in view-only -->
+    <div id="inputPanel" class="input-panel">
+      <!-- Builder controls (hidden in view-only) -->
       <input type="text" id="manifestUrl" placeholder="To Build: Add IIIF Manifest URLs here one at a time or separated by commas" />
       <button id="addManifest">Add Manifest(s)</button>
 
       <input type="text" id="manifestName" placeholder="To Save: Enter new gallery manifest name here and click Export button" />
       <button id="export-manifest">Export Combined Manifest</button>
 
-      <p><small>To Open: Use Choose File button, navigate to a locally saved .json file and click Load Manifest</small></p>
+      <!-- Viewer upload controls (remain hidden by view-only) -->
+      <p><small>Choose a saved gallery manifest file to view</small></p>
       <label for="uploadManifest" class="file-input-label">Choose File</label>
       <input type="file" id="uploadManifest" accept=".json" style="display: none;" />
       <span id="fileName" class="file-name">No file chosen</span>
       <button id="loadManifest">Load Manifest</button>
     </div>
   </div>
+
   <div id="gallery"></div>
 </div>
 
+<!-- Resizable divider and viewer -->
 <div id="resizer"></div>
 <div id="viewer"></div>
 
-<!-- Include script.js only once -->
+<!-- Include script.js exactly once -->
 <script src="script.js"></script>
 
-<!-- Page Selector Modal -->
+<!-- Page Selector Modal (required so script.js event binding doesn’t fail) -->
 <div id="pageSelectorModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -60,4 +53,7 @@
     </div>
   </div>
 </div>
-</div> </body> </html>
+ </div> <!-- Hint + openFirst script --> <script> document.addEventListener('DOMContentLoaded', function() { var viewerEl = document.getElementById('viewer'); if (viewerEl && !document.getElementById('viewerHint')) { var hint = document.createElement('div'); hint.id = 'viewerHint'; hint.textContent = 'Click any thumbnail to load an image.'; viewerEl.appendChild(hint); } var params = new URLSearchParams(window.location.search); var openFirst = (params.get('openFirst') === '1' || params.get('openfirst') === '1'); var opened = false; function markViewerHasImage() { document.body.classList.add('viewer-has-image'); } function tryOpenFirst() { if (opened) return; var firstThumb = document.querySelector('#gallery .card img'); if (firstThumb) { opened = true; firstThumb.click(); markViewerHasImage(); } } if (openFirst) { tryOpenFirst(); var gallery = document.getElementById('gallery'); if (gallery) { var mo = new MutationObserver(function() { tryOpenFirst(); }); mo.observe(gallery, { childList: true, subtree: true }); } } document.addEventListener('click', function(e) { if (e.target && e.target.matches('#gallery .card img')) { markViewerHasImage(); } }); }); 
+  
+ </script> </body> </html>
+ 
