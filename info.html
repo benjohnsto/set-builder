@@ -508,3 +508,256 @@
         <ol>
           <li>Person A creates initial gallery and shares the link</li>
           <li>Person B opens it, adds their finds, saves as "Original-Name-Extended"</li>
+        </ol>
+        </div>
+
+            <!-- TERMINOLOGY -->
+    <div class="info-section" id="terminology">
+      <h2>📚 Terminology Guide</h2>
+
+      <p>Understanding these terms will help you use the app more effectively:</p>
+
+      <h3>IIIF Terms</h3>
+      <dl style="margin-left: 1rem;">
+        <dt style="font-weight: bold; margin-top: 1rem;">IIIF (International Image Interoperability Framework)</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A set of open standards for delivering high-quality, attributed digital objects online at scale. Enables images from different institutions to work together.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Manifest</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A JSON file that describes a digital object (book, map, photograph, etc.) and its structure. Contains metadata and links to images.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Canvas</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">In IIIF, a canvas represents a single view or page. A multi-page book has multiple canvases.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Image Service</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">The server that delivers the actual image data, allowing for zooming and dynamic sizing.</dd>
+      </dl>
+
+      <h3>App-Specific Terms</h3>
+      <dl style="margin-left: 1rem;">
+        <dt style="font-weight: bold; margin-top: 1rem;">Gallery</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Your collection of images displayed as cards. This is what you see on screen and can customize.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Card</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A single item in your gallery showing a thumbnail and metadata for one image.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Save Locally</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Download your gallery as a JSON file to your computer. You control the file and can re-upload it anytime.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Share</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Create a public link to your gallery by uploading it to a hosting service (like GitHub Gist).</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Deep Link</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A URL that automatically loads a specific gallery. Format: <code>yourapp.com/?file=gallery-url</code></dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Fork</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Opening someone else's gallery, modifying it, and saving your own version. The original remains unchanged.</dd>
+      </dl>
+
+      <h3>GitHub Terms</h3>
+      <dl style="margin-left: 1rem;">
+        <dt style="font-weight: bold; margin-top: 1rem;">Gist</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A simple way to share files (like your gallery JSON) with others. Can be public or secret (unlisted).</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Raw URL</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">The direct link to the file content (not the GitHub webpage). This is what you use in your deep links.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Anonymous Gist</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">A gist created without logging in. Cannot be edited or deleted once created.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Public Gist</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Discoverable in search and your profile. Good for sharing widely.</dd>
+
+        <dt style="font-weight: bold; margin-top: 1rem;">Secret Gist</dt>
+        <dd style="margin-left: 2rem; margin-bottom: 0.5rem;">Not listed in search, but anyone with the link can access it. Good for limited sharing.</dd>
+      </dl>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div class="info-section" id="troubleshooting">
+      <h2>🔧 Troubleshooting</h2>
+
+      <h3>Adding Manifests</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: "Error fetching IIIF Manifest"</h4>
+        <p><strong>Possible causes:</strong></p>
+        <ul>
+          <li>Invalid URL (typo or incomplete URL)</li>
+          <li>The server is down or slow</li>
+          <li>URL is not a IIIF manifest (might be a webpage instead)</li>
+          <li>CORS (Cross-Origin Resource Sharing) restrictions</li>
+        </ul>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Double-check the URL is complete and correct</li>
+          <li>Try opening the URL directly in a new browser tab - does it show JSON?</li>
+          <li>Make sure it's a manifest URL (usually contains "/manifest" or ends in .json)</li>
+          <li>Try again in a few minutes (server might be temporarily down)</li>
+          <li>Try a different manifest to verify the app is working</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Manifest loads but no images appear</h4>
+        <p><strong>Possible causes:</strong></p>
+        <ul>
+          <li>Manifest doesn't contain image data (might be collection-level manifest)</li>
+          <li>Images use an unsupported IIIF version</li>
+          <li>Image service URLs are broken</li>
+        </ul>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Check browser console (F12) for error messages</li>
+          <li>Verify the manifest URL is for a specific item, not a collection</li>
+          <li>Try a known-working manifest to test</li>
+        </ol>
+      </div>
+
+      <h3>Viewing Images</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: Clicking thumbnail does nothing</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Make sure you're clicking the thumbnail image (not the card background)</li>
+          <li>Check if the viewer panel is visible (might be resized too small)</li>
+          <li>Try dragging the divider between gallery and viewer to make viewer larger</li>
+          <li>Refresh the page and try again</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Image loads but won't zoom</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Make sure your mouse is over the image viewer area</li>
+          <li>Try using the +/- buttons instead of mouse wheel</li>
+          <li>Some images might be low resolution and have limited zoom</li>
+          <li>Check if browser zoom is interfering (reset to 100%)</li>
+        </ol>
+      </div>
+
+      <h3>Saving & Loading</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: "Failed to load manifest" when uploading JSON</h4>
+        <p><strong>Possible causes:</strong></p>
+        <ul>
+          <li>File is not valid JSON (corrupted or wrong format)</li>
+          <li>File was edited incorrectly</li>
+          <li>Wrong file selected</li>
+        </ul>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Make sure you selected a .json file downloaded from this app</li>
+          <li>Don't edit the JSON file manually unless you know JSON syntax</li>
+          <li>Try opening the JSON file in a text editor - does it look like valid JSON?</li>
+          <li>Re-download the original from your gist if you have one</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Saved gallery doesn't preserve my reordering</h4>
+        <p><strong>Solution:</strong></p>
+        <p>Make sure you're using the latest version of the app. Older versions had this bug, but it's been fixed.</p>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Can't find my downloaded JSON file</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Check your browser's Downloads folder</li>
+          <li>Look in your default download location (usually ~/Downloads or C:\Users\YourName\Downloads)</li>
+          <li>Check browser's download history (Ctrl+J or Cmd+J)</li>
+          <li>Re-export the gallery if you can't find it</li>
+        </ol>
+      </div>
+
+      <h3>Sharing & Gists</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: Deep link doesn't load the gallery</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Verify the URL format: <code>yourapp.com/?file=GIST_RAW_URL</code></li>
+          <li>Make sure you used the "Raw" gist URL (not the gist page URL)</li>
+          <li>Check that the gist is public (not private)</li>
+          <li>Try opening the gist raw URL directly - does it show JSON?</li>
+          <li>URL encoding: make sure special characters are properly encoded</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Gist was created but link doesn't work</h4>
+        <p><strong>Common mistake:</strong></p>
+        <p>Using the gist page URL instead of the Raw URL.</p>
+        <p><strong>Wrong:</strong> <code>https://gist.github.com/username/abc123</code></p>
+        <p><strong>Right:</strong> <code>https://gist.githubusercontent.com/username/abc123/raw/filename.json</code></p>
+        <p>Always click the "Raw" button and use that URL!</p>
+      </div>
+
+      <h3>Canvas LMS Embedding</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: "This content cannot be displayed in a frame"</h4>
+        <p><strong>Cause:</strong> Canvas security settings block external iframes.</p>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Contact your Canvas administrator to whitelist GitHub Pages</li>
+          <li>Use "Open in new window" link instead of iframe</li>
+          <li>Use Canvas "Redirect Tool" if available</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Iframe shows but gallery is cut off</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Increase iframe height (try 1000 or 1200 instead of 800)</li>
+          <li>Make sure width is set to 100% (not fixed pixels)</li>
+          <li>Check that you didn't accidentally add CSS that limits height</li>
+        </ol>
+      </div>
+
+      <h3>General Issues</h3>
+
+      <div class="workflow-card">
+        <h4>Problem: App is slow or unresponsive</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>You might have too many high-resolution images loaded (try removing some)</li>
+          <li>Close other browser tabs to free up memory</li>
+          <li>Refresh the page</li>
+          <li>Try a different browser</li>
+          <li>Check your internet connection speed</li>
+        </ol>
+      </div>
+
+      <div class="workflow-card">
+        <h4>Problem: Layout looks broken on mobile</h4>
+        <p><strong>Solutions:</strong></p>
+        <ol>
+          <li>Try rotating to landscape orientation</li>
+          <li>The app works best on tablets and larger screens</li>
+          <li>On small phones, use "Open in new window" for better experience</li>
+        </ol>
+      </div>
+
+      <h3>Still Having Issues?</h3>
+      <p>If you're experiencing problems not covered here:</p>
+      <ol>
+        <li>Check the browser console for error messages (press F12, click Console tab)</li>
+        <li>Try in a different browser (Chrome, Firefox, Safari, Edge)</li>
+        <li>Clear browser cache and cookies</li>
+        <li>Make sure you're using a modern, updated browser</li>
+        <li>Check if your institution's firewall is blocking external resources</li>
+      </ol>
+
+      <div class="tip-box">
+        <strong>💡 For Developers:</strong> This is an open-source project. You can view the source code, report issues, or contribute improvements on GitHub.
+      </div>
+    </div>
+
+  </div> <!-- End info-container -->
+</body>
+</html>
