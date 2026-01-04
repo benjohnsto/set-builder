@@ -594,10 +594,43 @@ function exportCombinedManifest() {
     return;
   }
 
-  if (collectedManifests.length === 0) {
-    alert('No manifests to export. Please add some manifests first.');
+  // Get current gallery state from the DOM
+  const gallery = document.getElementById('gallery');
+  const cards = gallery.querySelectorAll('.card');
+  
+  if (cards.length === 0) {
+    alert('No images in gallery to export. Please add some manifests first.');
     return;
   }
+
+  // Build manifests array from current gallery order
+  const currentManifests = [];
+  
+  cards.forEach(card => {
+    // Find the manifest link in the card
+    const manifestLinks = card.querySelectorAll('a');
+    let manifestUrl = null;
+    
+    manifestLinks.forEach(link => {
+      if (link.textContent === 'View IIIF Manifest') {
+        manifestUrl = link.href;
+      }
+    });
+    
+    if (manifestUrl) {
+      // Find the corresponding manifest in collectedManifests
+      const manifest = collectedManifests.find(m => 
+        (m['@id'] === manifestUrl || m.id === manifestUrl)
+      );
+      
+      if (manifest) {
+        currentManifests.push(manifest);
+      }
+    }
+  });
+
+  // Update collectedManifests to match current state
+  collectedManifests = currentManifests;
 
   // Create a combined manifest structure
   const combinedManifest = {
