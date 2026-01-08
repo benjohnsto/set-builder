@@ -155,7 +155,7 @@
     <li><a href="#github-gist">Creating a GitHub Gist Account</a></li>
     <li><a href="#sharing">Sharing Your Galleries</a></li>
     <li><a href="#embedding">Embedding in Canvas LMS</a></li> <!-- NEW -->
-    <li><a href="#workflows">Common Workflows</a></li>
+    <li><a href="#workflows">Suggested Workflows</a></li>
     <li><a href="#terminology">Terminology Guide</a></li>
     <li><a href="#troubleshooting">Troubleshooting</a></li>
   </ul>
@@ -168,7 +168,7 @@
       <h3>What is this app?</h3>
       <p>The IIIF Image Gallery Builder helps you create custom collections of images from IIIF (International Image Interoperability Framework) manifests. You can:</p>
       <ul>
-        <li>Add images from any IIIF-compliant repository</li>
+        <li>Add images from IIIF-compliant repository</li>
         <li>View high-resolution images with zoom capabilities</li>
         <li>Rearrange and curate your collection</li>
         <li>Save galleries to your computer</li>
@@ -177,7 +177,7 @@
 
       <h3>Adding Images to Your Gallery</h3>
       <ol>
-        <li>Find a IIIF manifest URL from a participating institution (Library of Congress, British Library, David Rumsey Map Collection, etc.)</li>
+        <li>Find a IIIF manifest URL from a participating institution (Stanford University Libraries, David Rumsey Map Collection, Library of Congress, Leventhal Map Center, etc.)</li>
         <li>Paste the URL into the "Add IIIF Manifest URLs" field</li>
         <li>Click "Add Manifest(s)"</li>
         <li>If the manifest contains multiple pages, you'll be able to select which ones to add</li>
@@ -236,7 +236,7 @@
       </ol>
 
       <div class="tip-box">
-        <strong>💡 Tip:</strong> You can modify any loaded gallery (add, remove, reorder) and save it as a new version!
+        <strong>💡 Tip:</strong> You will learn to create shareable URLs for collections using GitHub Gist in the steps below!
       </div>
     </div>
 
@@ -286,8 +286,15 @@
     <div class="info-section" id="sharing">
       <h2>🔗 Sharing Your Galleries</h2>
 
-      <h3>Method 1: Manual Gist Creation (Recommended)</h3>
-      <p>This method gives you the most control:</p>
+      <h3>Send someone your JSON file via email</h3>
+      <ol>
+        <li>Save your gallery locally (download JSON file)</li>
+        <li>Attach your JSON file to an email
+        <li> In the body of the email, paste the link to the webapp: https://davidrumseymapcenter.github.io/set-builder/</li>
+        <li> Tell the recipient to download the file to their desktop and open it using the "Load Gallery" button in the app</li>
+        </ol>
+
+      <h3>Create a Sharable Link with GitHub Gist</h3>
 
       <ol>
         <li>Save your gallery locally (download JSON file)</li>
@@ -299,18 +306,15 @@
         <li>Click "Create public gist" (or "Create secret gist" for unlisted)</li>
         <li>Click the "Raw" button in the top-right corner</li>
         <li>Copy the URL from your browser's address bar</li>
-      </ol>
-
-      <h3>Creating Your Shareable Link</h3>
-      <p>Once you have the Raw gist URL, create your shareable link:</p>
+      <li>Create your shareable link:</li>
       
       <div class="code-snippet">
-        https://yourusername.github.io/your-repo/?file=PASTE_GIST_RAW_URL_HERE
+        https://davidrumseymapcenter.github.io/set-builder/?file=PASTE_GIST_RAW_URL_HERE
       </div>
 
       <p><strong>Example:</strong></p>
       <div class="code-snippet">
-        https://yourusername.github.io/iiif-gallery/?file=https://gist.githubusercontent.com/username/abc123/raw/colonial-maps.json
+        https://davidrumseymapcenter.github.io/set-builder/?file=https://gist.githubusercontent.com/kristinallarsen/dd25a0e3fb0535d10d81b327a0d45454/raw/3b479ead4429474900b817bdfe0579d53cefa935/Ink%2520and%2520Empire
       </div>
 
       <h3>What Recipients Can Do</h3>
@@ -339,7 +343,7 @@
         <li>Create and save your gallery</li>
         <li>Upload it to GitHub Gist (see <a href="#sharing">Sharing section</a>)</li>
         <li>Create your gallery URL:
-          <div class="code-snippet">https://yourusername.github.io/your-repo/?file=GIST_RAW_URL</div>
+          <div class="code-snippet">https://davidrumseymapcenter.github.io/set-builder/?file=GIST_RAW_URL</div>
         </li>
         <li>Copy this complete URL</li>
       </ol>
@@ -407,7 +411,7 @@
       <div class="code-snippet">&lt;h2&gt;Assignment: Analyze Colonial Maps&lt;/h2&gt;
 &lt;p&gt;Explore the gallery below and select 3 maps for your analysis essay.&lt;/p&gt;
 
-&lt;iframe src="https://yourusername.github.io/iiif-gallery/?file=https://gist.githubusercontent.com/username/abc123/raw/colonial-maps.json" 
+&lt;iframe src="https://davidrumseymapcenter.github.io/set-builder/?file=https://gist.githubusercontent.com/username/abc123/raw/colonial-maps.json" 
   width="100%" 
   height="1000" 
   style="border: 1px solid #ccc; border-radius: 4px; margin: 1rem 0;"
@@ -415,7 +419,7 @@
 &lt;/iframe&gt;
 
 &lt;p&gt;&lt;strong&gt;Can't see the gallery above?&lt;/strong&gt; 
-&lt;a href="https://yourusername.github.io/iiif-gallery/?file=..." target="_blank"&gt;
+&lt;a href="https://davidrumseymapcenter.github.io/set-builder/?file=..." target="_blank"&gt;
   Open in new window
 &lt;/a&gt;&lt;/p&gt;</div>
 
@@ -423,17 +427,6 @@
         <strong>💡 Pro Tip:</strong> Always include a "Open in new window" link as a fallback in case the iframe doesn't load on some devices or browsers.
       </div>
 
-      <h3>Auto-Open First Image (Optional)</h3>
-      <p>To have the first image automatically load in the viewer when students open the page, add <code>&openFirst=1</code> to your URL:</p>
-
-      <div class="code-snippet">https://yourusername.github.io/iiif-gallery/?file=GIST_URL<strong>&openFirst=1</strong></div>
-
-      <p>This is helpful for:</p>
-      <ul>
-        <li>Single-image assignments</li>
-        <li>Guiding students to start with a specific image</li>
-        <li>Demonstrating the zoom functionality immediately</li>
-      </ul>
 
       <h3>Troubleshooting Canvas Embeds</h3>
       
@@ -476,7 +469,7 @@
 
     <!-- WORKFLOWS -->
     <div class="info-section" id="workflows">
-      <h2>🎯 Common Workflows</h2>
+      <h2>🎯 Suggested Workflows</h2>
 
       <div class="workflow-card">
         <h3>📚 For Teachers: Create Assignment Starter Galleries</h3>
@@ -500,16 +493,40 @@
           <li>Create new gists for each major version</li>
           <li>In your publications, reference specific versions by their gist URLs</li>
         </ol>
-        <p><strong>Benefits:</strong> Permanent, citable versions. Readers can see exactly what you were looking at. Track evolution of your research.</p>
+        <p><strong>Benefits:</strong> Permanent, citable, linkable versions. Readers can see exactly what you were looking at. Track evolution of your research.</p>
       </div>
 
       <div class="workflow-card">
-        <h3>👥 For Collaborators: Build on Each Other's Work</h3>
-        <ol>
-          <li>Person A creates initial gallery and shares the link</li>
-          <li>Person B opens it, adds their finds, saves as "Original-Name-Extended"</li>
-        </ol>
-        </div>
+  <h3>👥 For Collaborators: Build on Each Other's Work</h3>
+  <ol>
+    <li>Person A creates initial gallery "Colonial Trade Routes" (5 items)</li>
+    <li>Person A saves locally as "Colonial-Trade-Routes-v1.json"</li>
+    <li>Person A creates a gist and shares the link with the team</li>
+    <li>Person B opens the shared link, reviews the 5 items</li>
+    <li>Person B adds 3 more items from their research (now 8 total)</li>
+    <li>Person B saves as "Colonial-Trade-Routes-v2-extended.json"</li>
+    <li>Person B creates their own gist and shares the updated link back</li>
+    <li>Person C opens Person B's link, adds 4 items (now 12 total)</li>
+    <li>Person C saves as "Colonial-Trade-Routes-v3.json"</li>
+    <li>Person C shares their version with the team</li>
+    <li>Team reviews all three versions (v1, v2, v3) side-by-side by opening multiple tabs</li>
+    <li>Team decides which items to keep for the final version</li>
+    <li>Person D compiles the best items from all versions (15 items total)</li>
+    <li>Right click on "View Manifest" link in each card to copy URLs</li>
+    <li>Person D saves as "Colonial-Trade-Routes-FINAL.json"</li>
+    <li>Person D creates gist and shares as the canonical team version</li>
+  </ol>
+  <p><strong>Benefits:</strong></p>
+  <ul>
+    <li>Clear version history (v1, v2, v3, FINAL)</li>
+    <li>Each person's contributions are visible in their version</li>
+    <li>Original never gets overwritten - always available for reference</li>
+    <li>Team can compare versions to see evolution of the collection</li>
+    <li>No conflicts - everyone works on their own copy</li>
+    <li>Final version represents consensus from all contributors</li>
+  </ul>
+  <p><strong>Pro tip:</strong> Add version numbers and contributor names to gallery names (e.g., "Project-v2-JohnEdits") to track who added what.</p>
+</div>
 
             <!-- TERMINOLOGY -->
     <div class="info-section" id="terminology">
@@ -575,6 +592,8 @@
     <!-- TROUBLESHOOTING -->
     <div class="info-section" id="troubleshooting">
       <h2>🔧 Troubleshooting</h2>
+
+      <p>Institutions have adopted IIIF in a variety of ways, and this is reflected in differences in manifests. The Gallery Builder may not recognize the structure of some manifests. We are committed to expanding compatibility! If you discover manifests that can not be ingested by this tool, please let us know by <a href="https://github.com/davidrumseymapcenter/set-builder/issues" target="blank">creating an issue in GitHub</a> or emailing <a href="mailto:rumseymapcenter@stanford.edu">rumseymapcenter@stanford.edu</a>.</p>
 
       <h3>Adding Manifests</h3>
 
@@ -656,12 +675,7 @@
         </ol>
       </div>
 
-      <div class="workflow-card">
-        <h4>Problem: Saved gallery doesn't preserve my reordering</h4>
-        <p><strong>Solution:</strong></p>
-        <p>Make sure you're using the latest version of the app. Older versions had this bug, but it's been fixed.</p>
-      </div>
-
+     
       <div class="workflow-card">
         <h4>Problem: Can't find my downloaded JSON file</h4>
         <p><strong>Solutions:</strong></p>
@@ -725,11 +739,10 @@
         <h4>Problem: App is slow or unresponsive</h4>
         <p><strong>Solutions:</strong></p>
         <ol>
-          <li>You might have too many high-resolution images loaded (try removing some)</li>
+          <li>Some slowness can be expected since images are being retrieved from remote servers</li>
           <li>Close other browser tabs to free up memory</li>
           <li>Refresh the page</li>
           <li>Try a different browser</li>
-          <li>Check your internet connection speed</li>
         </ol>
       </div>
 
@@ -754,7 +767,7 @@
       </ol>
 
       <div class="tip-box">
-        <strong>💡 For Developers:</strong> This is an open-source project. You can view the source code, report issues, or contribute improvements on GitHub.
+        <strong>💡 For Developers:</strong> This is an open-source project. You can view the source code, report issues, or contribute improvements on <a href="https://github.com/davidrumseymapcenter/set-builder" target="blank">GitHub</a>.
       </div>
     </div>
 
