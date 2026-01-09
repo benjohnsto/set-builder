@@ -415,23 +415,28 @@ if (iiifVersion === 3) {
       attribution = reqValue[0] || attribution;
     }
   } else {
-    // IIIF 2.0
-   if (manifest.attribution) {
-    // Handle array or string
-    if (Array.isArray(manifest.attribution)) {
-      // Filter out empty strings and URLs, prefer descriptive text
-      const nonEmpty = manifest.attribution.filter(a => a && a.trim() && !a.startsWith('http'));
-      attribution = nonEmpty[0] || manifest.attribution.find(a => a && a.trim()) || 'No attribution returned';
-    } else {
-      attribution = manifest.attribution;
+    // IIIF 2.0: Try metadata fields first (more reliable than attribution field)
+  attribution = getMetadataValue(manifestMetadata, 'Repository') ||
+                getMetadataValue(manifestMetadata, 'Digital Publisher') ||
+                getMetadataValue(canvasMetadata, 'Repository');
+  
+  // If metadata doesn't have it, try attribution field
+  if (!attribution) {
+    if (manifest.attribution) {
+      // Handle array or string
+      if (Array.isArray(manifest.attribution)) {
+        // Only use if it's not a URL
+        const nonUrl = manifest.attribution.find(a => a && a.trim() && !a.startsWith('http'));
+        attribution = nonUrl || 'No attribution returned';
+      } else if (!manifest.attribution.startsWith('http')) {
+        attribution = manifest.attribution;
+      }
     }
   }
   
-  // If still not found, try Repository metadata field
-  if (attribution === 'No attribution returned') {
-    attribution = getMetadataValue(manifestMetadata, 'Repository') ||
-                  getMetadataValue(manifestMetadata, 'Digital Publisher') ||
-                  'No attribution returned';
+  // Final fallback
+  if (!attribution) {
+    attribution = 'No attribution returned';
   }
 }
 
