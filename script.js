@@ -367,15 +367,23 @@ if (iiifVersion === 3) {
   const metadataTitle = getMetadataValue(canvasMetadata, 'Title') || getMetadataValue(manifestMetadata, 'Title');
   if (metadataTitle) title = metadataTitle;
 
-  // Get date
-  let date = getMetadataValue(canvasMetadata, 'Date') || 
-             getMetadataValue(manifestMetadata, 'Date') || 
-             getMetadataValue(manifestMetadata, 'Created Published') || 
-             getMetadataValue(canvasMetadata, 'Associated date') || 
-             getMetadataValue(manifestMetadata, 'Associated date') || 
-              getMetadataValue(manifestMetadata, 'Publication Date') ||  
-           getMetadataValue(canvasMetadata, 'Publication Date') ||   
-             'No date returned';
+ // Get date
+let date = getMetadataValue(canvasMetadata, 'Date') || 
+           getMetadataValue(manifestMetadata, 'Date') || 
+           getMetadataValue(manifestMetadata, 'Issued') ||           // Princeton
+           getMetadataValue(canvasMetadata, 'Issued') ||             
+           getMetadataValue(manifestMetadata, 'Created') ||          
+           getMetadataValue(canvasMetadata, 'Created') ||            
+           getMetadataValue(manifestMetadata, 'Date made') ||        // Smithsonian
+           getMetadataValue(canvasMetadata, 'Date made') ||          
+           getMetadataValue(manifestMetadata, 'Published') ||        // Berkeley (if included)
+           getMetadataValue(canvasMetadata, 'Published') ||
+           getMetadataValue(manifestMetadata, 'Created Published') || 
+           getMetadataValue(canvasMetadata, 'Associated date') || 
+           getMetadataValue(manifestMetadata, 'Associated date') ||
+           getMetadataValue(manifestMetadata, 'Publication Date') || // CONTENTdm
+           getMetadataValue(canvasMetadata, 'Publication Date') ||
+           'No date returned';
 
   // Get author/creator
   let author = getMetadataValue(canvasMetadata, 'Creator') || 
